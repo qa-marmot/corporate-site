@@ -471,6 +471,117 @@ footer {
 .d1 { transition-delay: .1s; }
 .d2 { transition-delay: .2s; }
 .d3 { transition-delay: .3s; }
+
+/* ── HAMBURGER ── */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  z-index: 200;
+}
+.hamburger span {
+  display: block;
+  width: 24px; height: 2px;
+  background: var(--text-1);
+  transition: all .25s ease;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ── MOBILE MENU ── */
+.mobile-menu {
+  display: none;
+  position: fixed;
+  inset: 80px 0 0;
+  background: var(--bg-2);
+  z-index: 99;
+  padding: 2rem;
+  flex-direction: column;
+  gap: 0;
+  border-top: 1px solid var(--border);
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  font-family: var(--mono);
+  font-size: 15px;
+  color: var(--text-1);
+  text-decoration: none;
+  letter-spacing: .08em;
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--border);
+  transition: color .2s;
+}
+.mobile-menu a:hover { color: var(--blue); }
+.mobile-menu .m-cta {
+  margin-top: 1.5rem;
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  text-align: center;
+  padding: 14px;
+  font-size: 13px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  nav { padding: 0 1.5rem; height: 64px; }
+  nav ul, .nav-cta { display: none; }
+  .hamburger { display: flex; }
+  .mobile-menu { inset: 64px 0 0; }
+
+  .container { padding: 0 1.5rem; }
+  section { padding: 4rem 0; }
+
+  /* Hero */
+  .hero-content { padding: 0 1.5rem 3rem; }
+  .hero-label { font-size: 10px; }
+  h1 { font-size: 2rem; }
+  .hero-desc { font-size: .88rem; }
+  .hero-stats { display: none; }
+  .hero-actions { flex-direction: column; align-items: flex-start; gap: .75rem; }
+  .btn { width: 100%; text-align: center; padding: 13px 20px; }
+
+  /* About */
+  .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .about-vals { grid-template-columns: 1fr 1fr; }
+
+  /* Services */
+  .services-grid { grid-template-columns: 1fr; }
+  .svc { border-right: none; border-bottom: 1px solid var(--border); }
+  .svc:last-child { border-bottom: none; }
+
+  /* Works */
+  .works-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .works-grid { grid-template-columns: 1fr; gap: 8px; }
+  .work:nth-child(n) { grid-column: span 1; aspect-ratio: 16/9; }
+
+  /* Process */
+  .process-grid { grid-template-columns: 1fr; gap: 3rem; }
+  .spec-card { position: static; }
+
+  /* Contact */
+  .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .tel-num { font-size: 1.3rem; }
+
+  /* Footer */
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .footer-about { grid-column: span 2; }
+  .footer-bottom { flex-direction: column; gap: 1rem; align-items: flex-start; }
+}
+
+@media (max-width: 480px) {
+  h1 { font-size: 1.75rem; }
+  .about-vals { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .footer-about { grid-column: span 1; }
+  .footer-badges { flex-wrap: wrap; }
+  .sec-title { font-size: 1.5rem; }
+}
 </style>
 </head>
 <body>
@@ -490,7 +601,18 @@ footer {
     <li><a href="#process">製造フロー</a></li>
   </ul>
   <a href="#contact" class="nav-cta">お問い合わせ</a>
+  <button class="hamburger" id="hamburger" aria-label="メニュー">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#about" class="mobile-link">会社概要</a>
+  <a href="#services" class="mobile-link">事業内容</a>
+  <a href="#works" class="mobile-link">施工事例</a>
+  <a href="#process" class="mobile-link">製造フロー</a>
+  <a href="#contact" class="m-cta mobile-link">お問い合わせ</a>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -763,6 +885,20 @@ footer {
 <script>
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => nav.classList.toggle('solid', window.scrollY > 40));
+
+// Hamburger
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobile-menu');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+});
+document.querySelectorAll('.mobile-link').forEach(a => {
+  a.addEventListener('click', () => {
+    hamburger.classList.remove('open');
+    mobileMenu.classList.remove('open');
+  });
+});
 
 const io = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
